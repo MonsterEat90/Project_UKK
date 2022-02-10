@@ -17,7 +17,7 @@ class SignUpPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 70,
+              height: 130,
             ),
             Padding(
               padding: kDefaultPadding,
@@ -27,7 +27,21 @@ class SignUpPage extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 5,
+              height: 15,
+            ),
+            Padding(
+              padding: kDefaultPadding,
+              child: SignUpForm(),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: kDefaultPadding,
+              child: PrimaryButton(buttonText: 'Sign Up'),
+            ),
+            SizedBox(
+              height: 20,
             ),
             Padding(
               padding: kDefaultPadding,
@@ -55,20 +69,6 @@ class SignUpPage extends StatelessWidget {
                   )
                 ],
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: kDefaultPadding,
-              child: SignUpForm(),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: kDefaultPadding,
-              child: PrimaryButton(buttonText: 'Sign Up'),
             ),
           ],
         ),

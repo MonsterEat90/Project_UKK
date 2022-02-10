@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:project_ukk/constants/color_constant.dart';
@@ -21,14 +21,55 @@ class LogInPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 120,
+                height: 220,
               ),
               Text(
-                'Welcome Back',
+                'Welcome User',
                 style: titleText,
               ),
               SizedBox(
-                height: 5,
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Please login with your account",
+                    style: subTitle,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              LogInForm(),
+              SizedBox(
+                height: 25,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ResetPasswordPage()));
+                },
+                child: Text(
+                  'Forgot password?',
+                  style: TextStyle(
+                    color: kZambeziColor,
+                    fontSize: 14,
+                    decoration: TextDecoration.underline,
+                    decorationThickness: 1,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 95,
+              ),
+              PrimaryButton(
+                buttonText: 'Log In',
+              ),
+              SizedBox(
+                height: 20,
               ),
               Row(
                 children: [
@@ -57,36 +98,6 @@ class LogInPage extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              LogInForm(),
-              SizedBox(
-                height: 20,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ResetPasswordPage()));
-                },
-                child: Text(
-                  'Forgot password?',
-                  style: TextStyle(
-                    color: kZambeziColor,
-                    fontSize: 14,
-                    decoration: TextDecoration.underline,
-                    decorationThickness: 1,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              PrimaryButton(
-                buttonText: 'Log In',
               ),
             ],
           ),
