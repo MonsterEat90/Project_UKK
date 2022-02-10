@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_ukk/pages/login/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,6 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'Poppins'),
+      home: const LogInPage(),
+    );
   }
 }
