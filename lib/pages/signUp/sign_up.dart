@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_ukk/constants/font_and_padding.dart';
 import 'package:project_ukk/pages/login/login_page.dart';
-import 'package:project_ukk/pages/widgets/primary_button.dart';
+import 'package:project_ukk/pages/widgets/login_button.dart';
+import 'package:project_ukk/pages/widgets/signup_button.dart';
 import 'package:project_ukk/pages/widgets/signup_form.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -38,7 +39,7 @@ class SignUpPage extends StatelessWidget {
             ),
             Padding(
               padding: kDefaultPadding,
-              child: PrimaryButton(buttonText: 'Sign Up'),
+              child: SignUpButton(buttonText: 'Sign Up'),
             ),
             SizedBox(
               height: 20,

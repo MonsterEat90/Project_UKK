@@ -6,7 +6,7 @@ import 'package:project_ukk/constants/font_and_padding.dart';
 import 'package:project_ukk/pages/reset_password/reset_password.dart';
 import 'package:project_ukk/pages/signUp/sign_up.dart';
 import 'package:project_ukk/pages/widgets/login_form.dart';
-import 'package:project_ukk/pages/widgets/primary_button.dart';
+import 'package:project_ukk/pages/widgets/login_button.dart';
 
 class LogInPage extends StatelessWidget {
   const LogInPage({Key? key}) : super(key: key);
@@ -65,7 +65,7 @@ class LogInPage extends StatelessWidget {
               SizedBox(
                 height: 95,
               ),
-              PrimaryButton(
+              LoginButton(
                 buttonText: 'Log In',
               ),
               SizedBox(

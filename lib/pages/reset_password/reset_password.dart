@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:project_ukk/constants/color_constant.dart';
 import 'package:project_ukk/constants/font_and_padding.dart';
 import 'package:project_ukk/pages/login/login_page.dart';
-import 'package:project_ukk/pages/widgets/primary_button.dart';
+import 'package:project_ukk/pages/widgets/login_button.dart';
+import 'package:project_ukk/pages/widgets/reset_button.dart';
 import 'package:project_ukk/pages/widgets/reset_form.dart';
 
 class ResetPasswordPage extends StatelessWidget {
@@ -59,7 +60,7 @@ class ResetPasswordPage extends StatelessWidget {
                         builder: (context) => LogInPage(),
                       ));
                 },
-                child: PrimaryButton(buttonText: 'Reset Password')),
+                child: ResetButton(buttonText: 'Reset Password')),
           ],
         ),
       ),

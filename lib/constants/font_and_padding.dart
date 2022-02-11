@@ -12,7 +12,7 @@ TextStyle subTitle = TextStyle(
     color: kSecondaryColor, fontSize: 18, fontWeight: FontWeight.w500);
 
 TextStyle textButton = TextStyle(
-  color: kPrimaryColor,
+  color: Colors.amberAccent,
   fontSize: 18,
   fontWeight: FontWeight.w700,
 );
