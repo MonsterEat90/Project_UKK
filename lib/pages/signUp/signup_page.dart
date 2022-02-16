@@ -1,81 +1,130 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:project_ukk/constants/color_constant.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:project_ukk/pages/reset_password/reset_password.dart';
-import 'package:project_ukk/pages/signUp/signup_page.dart';
-import 'package:project_ukk/pages/user_page/navbar.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:project_ukk/constants/color_constant.dart';
+import 'package:project_ukk/pages/login/login_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = true;
   //Form Key
   final _formKey = GlobalKey<FormState>();
 
   var email = "";
   var password = "";
+  var confirmPassword = "";
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
   clearText() {
     emailController.clear();
     passwordController.clear();
+    confirmPasswordController.clear();
   }
 
-  userLogin() async {
-    try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PageNavBar(),
+  passwordRegistration() async {
+    if (password == confirmPassword) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        print(userCredential);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: kSoftLimeGreen,
+            content: Text(
+              "Registered Successfully. Please Login..",
+              style: TextStyle(fontSize: 20.0),
+            ),
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          print("Password Provided is too Weak");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: kLightOrange,
+              content: Text(
+                "Password Provided is too Weak",
+                style: GoogleFonts.dongle(fontSize: 18.0, color: kBlackColor),
+              ),
+            ),
+          );
+        } else if (e.code == 'email-already-in-use') {
+          print("Account Already exists");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: kLightOrange,
+              content: Text(
+                "Account Already exists",
+                style: GoogleFonts.dongle(fontSize: 18.0, color: kBlackColor),
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      print("Password and Confirm Password doesn't match");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: kLightOrange,
+          content: Text(
+            "Password and Confirm Password doesn't match",
+            style: GoogleFonts.dongle(fontSize: 16.0, color: kBlackColor),
+          ),
         ),
       );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print("No User Found for that Email");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text(
-              "No User Found for that Email",
-              style: TextStyle(fontSize: 18.0, color: Colors.black),
-            ),
-          ),
-        );
-      } else if (e.code == 'wrong-password') {
-        print("Wrong Password Provided by User");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text(
-              "Wrong Password Provided by User",
-              style: TextStyle(fontSize: 18.0, color: Colors.black),
-            ),
-          ),
-        );
-      }
     }
   }
+
+  // Adding User to Cloud Firestore
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future<void> addUser() {
+    return users
+        .add({
+          'email': email,
+          'password': password,
+          'confirmPassword': confirmPassword,
+        })
+        .then((value) => print('User Added'))
+        .catchError((error) => print('Failed to Add user: $error'));
+  }
+
+  // Future<bool> isDataExists(String dataName) async {
+  //   DocumentSnapshot<Object?> data = await users.doc(dataName).get();
+  //   if (data.exists) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,8 +181,39 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    final loginButton = Material(
-      elevation: 2,
+    //Confirm Password
+    final confirmPasswordField = TextFormField(
+      autofocus: false,
+      controller: confirmPasswordController,
+      obscureText: _passwordVisible,
+      validator: (value) {
+        if (confirmPasswordController.text != passwordController.text) {
+          return "Confirm Password doesn't match";
+        }
+        return null;
+      },
+      textInputAction: TextInputAction.done,
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.vpn_key),
+        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Confirm Password",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        suffixIcon: IconButton(
+          icon:
+              Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              _passwordVisible = !_passwordVisible;
+            });
+          },
+        ),
+      ),
+    );
+    //Sign Up Button
+    final signUpButton = Material(
+      elevation: 5,
       borderRadius: BorderRadius.circular(50),
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -152,10 +232,10 @@ class _LoginPageState extends State<LoginPage> {
           child: Center(
             child: MaterialButton(
               child: Text(
-                "Login",
+                "SignUp",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.dongle(
-                  fontSize: 30,
+                  fontSize: 28,
                   color: kWhiteColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -168,8 +248,12 @@ class _LoginPageState extends State<LoginPage> {
                   setState(() {
                     email = emailController.text;
                     password = passwordController.text;
+                    confirmPassword = confirmPasswordController.text;
+                    // isDataExists(email);
+                    addUser();
+                    passwordRegistration();
+                    clearText();
                   });
-                  userLogin();
                 }
               },
             ),
@@ -177,38 +261,49 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    final forgotPassword = Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 10,
-      ),
-      child: GestureDetector(
-        onTap: () => {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResetPassword(),
+    //Reset Button
+    final resetButton = Material(
+      elevation: 5,
+      borderRadius: BorderRadius.circular(50),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: kSecondaryColor,
+        ),
+        child: Material(
+          borderRadius: BorderRadius.circular(50),
+          color: Colors.transparent,
+          child: Center(
+            child: MaterialButton(
+              child: Text(
+                "Reset",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.dongle(
+                  fontSize: 28,
+                  color: kWhiteColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              padding: EdgeInsets.fromLTRB(20, 10, 20, 15),
+              minWidth: MediaQuery.of(context).size.width,
+              onPressed: () => {clearText()},
             ),
-          ),
-        },
-        child: Text(
-          'Forgot Password ?',
-          style: TextStyle(
-            decoration: TextDecoration.underline,
-            color: Colors.grey,
           ),
         ),
       ),
     );
-    final registerNow = Row(
+    final alreadyMember = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          "Don't have an account? ",
+          "Already a Member? ",
           style: TextStyle(color: Colors.grey),
         ),
         GestureDetector(
           child: Text(
-            "Register Now",
+            "Login Now",
             style: TextStyle(
               color: kPrimaryColor,
               fontWeight: FontWeight.bold,
@@ -219,7 +314,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SignUpPage(),
+                builder: (context) => LoginPage(),
               ),
             );
           },
@@ -248,10 +343,10 @@ class _LoginPageState extends State<LoginPage> {
                           bottomRight: Radius.circular(100),
                         ),
                         gradient: LinearGradient(
-                          colors: [kDarkModerateCyan, kModerateCyan],
-                          stops: [0.0, 1],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
+                          colors: const [kDarkModerateCyan, kModerateCyan],
+                          stops: [0.0, 1.0],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
                         ),
                       ),
                       child: Column(
@@ -265,7 +360,6 @@ class _LoginPageState extends State<LoginPage> {
                             height: 200,
                             child: SvgPicture.asset(
                               'assets/logo.svg',
-                              fit: BoxFit.contain,
                               color: kWhiteColor,
                             ),
                           ),
@@ -281,25 +375,29 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           SizedBox(
-                            height: 70,
+                            height: 30,
                           ),
                           emailField,
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           passwordField,
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
-                          forgotPassword,
+                          confirmPasswordField,
                           SizedBox(
                             height: 30,
                           ),
-                          loginButton,
+                          signUpButton,
                           SizedBox(
-                            height: 60,
+                            height: 10,
                           ),
-                          registerNow,
+                          resetButton,
+                          SizedBox(
+                            height: 50,
+                          ),
+                          alreadyMember,
                         ],
                       ),
                     ),
