@@ -294,6 +294,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+
     final alreadyMember = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -311,12 +312,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoginPage(),
-              ),
-            );
+            Navigator.of(context).pop();
           },
         ),
       ],

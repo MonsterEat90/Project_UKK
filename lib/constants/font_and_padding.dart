@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project_ukk/constants/color_constant.dart';
 
 const kDefaultPadding = EdgeInsets.symmetric(horizontal: 30);
+const kDefaultPadding2 = 20.0;
 
 TextStyle titleText =
     TextStyle(color: kPrimaryColor, fontSize: 32, fontWeight: FontWeight.w700);
