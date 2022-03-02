@@ -32,8 +32,10 @@ class _AddNewCollectionState extends State<AddNewCollection> {
   }
 
   uploadCollection() async {
-    var imageFile =
-        FirebaseStorage.instance.ref().child("collectionImage").child("/.jpg");
+    var imageFile = FirebaseStorage.instance
+        .ref()
+        .child("collectionImage")
+        .child(basename(_image!.path));
     UploadTask task = imageFile.putFile(_image!);
     TaskSnapshot snapshot = await task;
     //for download

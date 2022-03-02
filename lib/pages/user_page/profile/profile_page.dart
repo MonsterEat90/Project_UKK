@@ -56,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: kLightOrange2,
       appBar: AppBar(
-        backgroundColor: kLightRedColor,
+        backgroundColor: kLightOrange,
         elevation: 2,
         title: Text(
           "Profile",
@@ -67,6 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+      body: Stack(),
     );
   }
 }
